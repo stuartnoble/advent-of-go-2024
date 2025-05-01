@@ -42,13 +42,44 @@ func loadNumbers(fileBytes []byte) (numsLeft []int, numsRight []int, err error) 
 	return numsLeft, numsRight, nil
 }
 
-func sumList(numbers []int) int {
-	if len(numbers) == 0 {
-		return 0
+func calculateTotalDistance(numsLeft, numsRight []int) int {
+	if len(numsLeft) != len(numsRight) {
+		panic("slices must have the same length")
 	}
 
-	// Recursive case: Calculate the sum of the first element and the rest of the list
-	return numbers[0] + sumList(numbers[1:])
+	totalDistance := 0
+	for i := 0; i < len(numsLeft); i++ {
+		totalDistance += Abs(numsRight[i] - numsLeft[i])
+	}
+
+	return totalDistance
+}
+
+// calculateSimilarityScore computes the similarity score based on the frequency
+// of numbers in two slices.
+func calculateSimilarityScore(numsLeft, numsRight []int) int {
+	// Create a similarity map to track occurrences in numsLeft and numsRight.
+	similarityMap := make(map[int][2]int)
+
+	// Update the map for numsLeft and numsRight.
+	for i := 0; i < len(numsLeft); i++ {
+		similarityMap[numsLeft[i]] = [2]int{
+			similarityMap[numsLeft[i]][0] + 1,
+			similarityMap[numsLeft[i]][1],
+		}
+		similarityMap[numsRight[i]] = [2]int{
+			similarityMap[numsRight[i]][0],
+			similarityMap[numsRight[i]][1] + 1,
+		}
+	}
+
+	// Compute the similarity score.
+	similarityScore := 0
+	for key, value := range similarityMap {
+		similarityScore += value[0] * value[1] * key
+	}
+
+	return similarityScore
 }
 
 func Abs(x int) int {
@@ -76,44 +107,10 @@ func puzzle1() {
 	sort.Ints(numsLeft)
 	sort.Ints(numsRight)
 
-	sum := 0
-	for i, num := range numsLeft {
-		sum += numsRight[i] - num
-	}
-
-	distances := make([]int, 0, len(numsLeft))
-	for index, numLeft := range numsLeft {
-		distances = append(distances, Abs(numsRight[index]-numLeft))
-	}
-
-	totalDistance := sumList(distances)
-
+	totalDistance := calculateTotalDistance(numsLeft, numsRight)
 	fmt.Println("ANSWER 1:", totalDistance)
 
-	similarityMap := make(map[int][]int, len(numsLeft))
-
-	for i := range numsLeft {
-		numLeft := numsLeft[i]
-		numRight := numsRight[i]
-
-		if value, ok := similarityMap[numLeft]; ok {
-			value[0]++
-		} else {
-			similarityMap[numLeft] = []int{1, 0}
-		}
-
-		if value, ok := similarityMap[numRight]; ok {
-			value[1]++
-		} else {
-			similarityMap[numRight] = []int{0, 1}
-		}
-	}
-
-	similarityScore := 0
-	for key, value := range similarityMap {
-		similarityScore += value[0] * value[1] * key
-	}
-
+	similarityScore := calculateSimilarityScore(numsLeft, numsRight)
 	fmt.Println("ANSWER 2:", similarityScore)
 }
 
