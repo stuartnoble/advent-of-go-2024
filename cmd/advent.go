@@ -48,7 +48,7 @@ func calculateTotalDistance(numsLeft, numsRight []int) int {
 	}
 
 	totalDistance := 0
-	for i := 0; i < len(numsLeft); i++ {
+	for i := range numsLeft {
 		totalDistance += Abs(numsRight[i] - numsLeft[i])
 	}
 
@@ -62,7 +62,7 @@ func calculateSimilarityScore(numsLeft, numsRight []int) int {
 	similarityMap := make(map[int][2]int)
 
 	// Update the map for numsLeft and numsRight.
-	for i := 0; i < len(numsLeft); i++ {
+	for i := range numsLeft {
 		similarityMap[numsLeft[i]] = [2]int{
 			similarityMap[numsLeft[i]][0] + 1,
 			similarityMap[numsLeft[i]][1],
