@@ -55,7 +55,7 @@ func Abs(x int) int {
 	if x < 0 {
 		return -x
 	}
-	
+
 	return x
 }
 
@@ -90,6 +90,31 @@ func puzzle1() {
 
 	fmt.Println("ANSWER 1:", totalDistance)
 
+	similarityMap := make(map[int][]int, len(numsLeft))
+
+	for i := range numsLeft {
+		numLeft := numsLeft[i]
+		numRight := numsRight[i]
+
+		if value, ok := similarityMap[numLeft]; ok {
+			value[0]++
+		} else {
+			similarityMap[numLeft] = []int{1, 0}
+		}
+
+		if value, ok := similarityMap[numRight]; ok {
+			value[1]++
+		} else {
+			similarityMap[numRight] = []int{0, 1}
+		}
+	}
+
+	similarityScore := 0
+	for key, value := range similarityMap {
+		similarityScore += value[0] * value[1] * key
+	}
+
+	fmt.Println("ANSWER 2:", similarityScore)
 }
 
 func main() {
