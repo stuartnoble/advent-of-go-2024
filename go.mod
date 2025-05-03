@@ -1,3 +1,3 @@
-module github.com/opencodeco/codespaces-go
+module adventofgo
 
-go 1.22.1
+go 1.24.1

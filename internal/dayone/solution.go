@@ -1,4 +1,4 @@
-package main
+package dayone
 
 import (
 	"embed"
@@ -6,9 +6,11 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"adventofgo/internal/utils"
 )
 
-//go:embed data/day1.txt
+//go:embed input.txt
 var dataFiles embed.FS
 
 func loadNumbers(fileBytes []byte) (numsLeft []int, numsRight []int, err error) {
@@ -19,7 +21,7 @@ func loadNumbers(fileBytes []byte) (numsLeft []int, numsRight []int, err error) 
 	numsRight = make([]int, 0, len(lines))
 
 	for _, l := range lines {
-		// Empty line occurs at the end of the file when we use Split.
+		// An empty line occurs at the end of the file when using Split.
 		if len(l) == 0 {
 			continue
 		}
@@ -44,12 +46,12 @@ func loadNumbers(fileBytes []byte) (numsLeft []int, numsRight []int, err error) 
 
 func calculateTotalDistance(numsLeft, numsRight []int) int {
 	if len(numsLeft) != len(numsRight) {
-		panic("slices must have the same length")
+		panic("numsLeft and numsRight must have the same length")
 	}
 
 	totalDistance := 0
 	for i := range numsLeft {
-		totalDistance += Abs(numsRight[i] - numsLeft[i])
+		totalDistance += utils.Abs(numsRight[i] - numsLeft[i])
 	}
 
 	return totalDistance
@@ -61,12 +63,15 @@ func calculateSimilarityScore(numsLeft, numsRight []int) int {
 	// Create a similarity map to track occurrences in numsLeft and numsRight.
 	similarityMap := make(map[int][2]int)
 
-	// Update the map for numsLeft and numsRight.
+	// Update the map for each item in numsLeft and numsRight.
+	// Every the map entry is automatically allocated so we don't need to initialise
+	// for the other value
 	for i := range numsLeft {
 		similarityMap[numsLeft[i]] = [2]int{
 			similarityMap[numsLeft[i]][0] + 1,
 			similarityMap[numsLeft[i]][1],
 		}
+
 		similarityMap[numsRight[i]] = [2]int{
 			similarityMap[numsRight[i]][0],
 			similarityMap[numsRight[i]][1] + 1,
@@ -82,18 +87,11 @@ func calculateSimilarityScore(numsLeft, numsRight []int) int {
 	return similarityScore
 }
 
-func Abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-
-	return x
-}
-
-func puzzle1() {
+func Solve() {
 	fmt.Println("DAY 1")
+	fmt.Println("-----")
 
-	b, err := dataFiles.ReadFile("data/day1.txt")
+	b, err := dataFiles.ReadFile("input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -103,7 +101,6 @@ func puzzle1() {
 		panic(err)
 	}
 
-	// Part 1
 	sort.Ints(numsLeft)
 	sort.Ints(numsRight)
 
@@ -112,11 +109,4 @@ func puzzle1() {
 
 	similarityScore := calculateSimilarityScore(numsLeft, numsRight)
 	fmt.Println("ANSWER 2:", similarityScore)
-}
-
-func main() {
-	fmt.Println("Advent of Code 2024")
-	fmt.Println("-------------------")
-
-	puzzle1()
 }
