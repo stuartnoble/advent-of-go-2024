@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Advent of Code 2024")
+	fmt.Println("Advent of Go 2024")
 	fmt.Println("===================")
 
 	dayone.Solve()
