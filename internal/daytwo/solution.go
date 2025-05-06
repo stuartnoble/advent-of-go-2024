@@ -1,8 +1,9 @@
 package daytwo
 
 import (
-	"adventofgo/internal/utils"
 	"fmt"
+
+	"adventofgo/internal/utils"
 )
 
 func compareLevels(first, second int) (isIncrease, isDecrease bool, distance int) {
@@ -22,6 +23,7 @@ func isSafeReport(report [5]int) bool {
 
 		if isIncreasing == isDecreasing || distance >= 4 {
 			isAllSafeLevels = false
+			break
 		}
 	}
 
