@@ -1,44 +1,45 @@
 package daytwo
 
-import (
-	"fmt"
-)
+type DayTwoPuzzle struct {
+	reports [][5]int
+}
 
-func isSafeDelta(levels []int) {
+const maxLevelDelta int = 3
 
+func isSafeDelta(levels []int, maxDelta int) bool {
+	firstDistance := levels[1] - levels[0]
+	secondDistance := levels[2] - levels[1]
+
+	isTrending := (firstDistance > 0 && secondDistance > 0) ||
+		(firstDistance < 0 && secondDistance < 0)
+
+	isWithinLimit := firstDistance <= maxDelta && secondDistance <= maxDelta
+
+	return isTrending || isWithinLimit
 }
 
 // Much less naive implementation that uses the fact that we know
 // how many levels are in each report to quickly assess the safety
 func isSafeReport(report [5]int) bool {
-	isSafeDelta(report[0:2])
-	isSafeDelta(report[1:3])
-	isSafeDelta(report[2:4])
-
-	// isAllSafeLevels := true
-	// isIncreasing := false
-	// isDecreasing := false
-
-	// for i := 0; i < len(report)-1; i++ {
-	// 	isIncrease, isDecrease, distance := compareLevels(report[i], report[i+1])
-
-	// 	isIncreasing = isIncreasing || isIncrease
-	// 	isDecreasing = isDecreasing || isDecrease
-
-	// 	if isIncreasing == isDecreasing || distance >= 4 {
-	// 		isAllSafeLevels = false
-	// 		break
-	// 	}
-	// }
-
-	return isAllSafeLevels
+	return isSafeDelta(report[0:3], maxLevelDelta) &&
+		isSafeDelta(report[1:3], maxLevelDelta) &&
+		isSafeDelta(report[2:3], maxLevelDelta)
 }
 
-func Solve(reports [][5]int) {
-	fmt.Println("DAY 2")
-	fmt.Println("-----")
+func (p *DayTwoPuzzle) LoadData() *DayTwoPuzzle {
+	p.reports = nil
 
-	for i := range reports {
-		fmt.Println(isSafeReport(reports[i]))
+	return p
+}
+
+func (p *DayTwoPuzzle) Solve() int {
+	numSafeReports := 0
+
+	for i := range p.reports {
+		if isSafeReport(p.reports[i]) {
+			numSafeReports++
+		}
 	}
+
+	return numSafeReports
 }

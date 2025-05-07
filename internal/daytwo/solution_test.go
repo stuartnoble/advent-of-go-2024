@@ -14,5 +14,7 @@ func TestSolve(t *testing.T) {
 		{1, 3, 6, 7, 9},
 	}
 
-	Solve(reports[:])
+	dayTwoPuzzle := DayTwoPuzzle{}
+	dayTwoPuzzle.reports = reports
+	dayTwoPuzzle.Solve()
 }
