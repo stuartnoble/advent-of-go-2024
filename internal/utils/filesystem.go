@@ -2,18 +2,14 @@ package utils
 
 import (
 	"bufio"
-	"embed"
+	"bytes"
 	"fmt"
-	"io"
 	"strconv"
 	"strings"
 )
 
-//go:embed data/*.txt
-var fileSystem embed.FS
-
-func LoadMatrix(r io.Reader) ([][]int, error) {
-	scanner := bufio.NewScanner(r)
+func LoadMatrix(data []byte) ([][]int, error) {
+	scanner := bufio.NewScanner(bytes.NewReader(data))
 	var matrix [][]int
 
 	for scanner.Scan() {
@@ -23,9 +19,11 @@ func LoadMatrix(r io.Reader) ([][]int, error) {
 		var row []int
 		for _, field := range fields {
 			num, err := strconv.Atoi(field)
+
 			if err != nil {
 				return nil, fmt.Errorf("invalid value %q: %v", field, err)
 			}
+
 			row = append(row, num)
 		}
 		matrix = append(matrix, row)

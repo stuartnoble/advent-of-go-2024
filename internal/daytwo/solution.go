@@ -1,13 +1,18 @@
 package daytwo
 
 import (
-	"adventofgo/internal/utils"
+	"embed"
 	"fmt"
+
+	"adventofgo/internal/utils"
 )
 
 type DayTwoPuzzle struct {
 	reports [][]int
 }
+
+//go:embed daytwo_input.txt
+var fileSystem embed.FS
 
 const maxLevelDelta int = 3
 
@@ -35,10 +40,15 @@ func isSafeReport(report []int) bool {
 }
 
 func (p *DayTwoPuzzle) LoadData() *DayTwoPuzzle {
-	puzzleInput, err := utils.LoadMatrix("input.txt")
+	data, err := fileSystem.ReadFile("daytwo_input.txt")
+	if err != nil {
+        panic(err)
+    }
+
+	puzzleInput, err := utils.LoadMatrix(data)
 
 	if err != nil {
-		fmt.Println("Error loading daytwo/input.txt:", err)
+		fmt.Println("Error loading daytwo_input.txt:", err)
 		return p
 	}
 
