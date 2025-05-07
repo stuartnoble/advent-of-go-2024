@@ -1,9 +1,12 @@
 package daytwo
 
-import "adventofgo/internal/utils"
+import (
+	"adventofgo/internal/utils"
+	"fmt"
+)
 
 type DayTwoPuzzle struct {
-	reports [][5]int
+	reports [][]int
 }
 
 const maxLevelDelta int = 3
@@ -21,16 +24,25 @@ func isSafeDelta(levels []int, maxDelta int) bool {
 	return isTrending && isWithinLimit
 }
 
-// Much less naive implementation that uses the fact that we know
-// how many levels are in each report to quickly assess the safety
-func isSafeReport(report [5]int) bool {
-	return isSafeDelta(report[0:3], maxLevelDelta) &&
-		isSafeDelta(report[1:4], maxLevelDelta) &&
-		isSafeDelta(report[2:5], maxLevelDelta)
+func isSafeReport(report []int) bool {
+	var isSafeReport bool = true
+
+	for i := 0; i <= len(report)-3; i++ {
+		isSafeReport = isSafeReport && isSafeDelta(report[i:i+3], maxLevelDelta)
+	}
+
+	return isSafeReport
 }
 
 func (p *DayTwoPuzzle) LoadData() *DayTwoPuzzle {
-	p.reports = nil
+	puzzleInput, err := utils.LoadMatrix("input.txt")
+
+	if err != nil {
+		fmt.Println("Error loading daytwo/input.txt:", err)
+		return p
+	}
+
+	p.reports = puzzleInput
 
 	return p
 }

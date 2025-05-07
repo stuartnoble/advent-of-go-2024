@@ -19,7 +19,7 @@ func main() {
 	dayTwoPuzzle := daytwo.DayTwoPuzzle{}
 
 	dayTwoAnswerOne := dayTwoPuzzle.
-		LoadData().
+		LoadData(fileSystem.).
 		Solve()
 	fmt.Println("Answer 1:", dayTwoAnswerOne)
 }
