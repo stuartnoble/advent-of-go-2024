@@ -1,5 +1,7 @@
 package daytwo
 
+import "adventofgo/internal/utils"
+
 type DayTwoPuzzle struct {
 	reports [][5]int
 }
@@ -13,17 +15,18 @@ func isSafeDelta(levels []int, maxDelta int) bool {
 	isTrending := (firstDistance > 0 && secondDistance > 0) ||
 		(firstDistance < 0 && secondDistance < 0)
 
-	isWithinLimit := firstDistance <= maxDelta && secondDistance <= maxDelta
+	isWithinLimit := utils.Abs(firstDistance) <= maxDelta &&
+		utils.Abs(secondDistance) <= maxDelta
 
-	return isTrending || isWithinLimit
+	return isTrending && isWithinLimit
 }
 
 // Much less naive implementation that uses the fact that we know
 // how many levels are in each report to quickly assess the safety
 func isSafeReport(report [5]int) bool {
 	return isSafeDelta(report[0:3], maxLevelDelta) &&
-		isSafeDelta(report[1:3], maxLevelDelta) &&
-		isSafeDelta(report[2:3], maxLevelDelta)
+		isSafeDelta(report[1:4], maxLevelDelta) &&
+		isSafeDelta(report[2:5], maxLevelDelta)
 }
 
 func (p *DayTwoPuzzle) LoadData() *DayTwoPuzzle {

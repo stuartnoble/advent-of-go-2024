@@ -14,7 +14,15 @@ func TestSolve(t *testing.T) {
 		{1, 3, 6, 7, 9},
 	}
 
+	expectedSafeReports := 2
+
 	dayTwoPuzzle := DayTwoPuzzle{}
 	dayTwoPuzzle.reports = reports
-	dayTwoPuzzle.Solve()
+	actualSafeReports := dayTwoPuzzle.Solve()
+
+	if actualSafeReports != expectedSafeReports {
+		t.Errorf("Result from Solve() was incorrect; got: %v, want: %v.",
+			expectedSafeReports,
+			actualSafeReports)
+	}
 }
