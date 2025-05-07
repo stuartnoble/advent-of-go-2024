@@ -2,40 +2,34 @@ package daytwo
 
 import (
 	"fmt"
-
-	"adventofgo/internal/utils"
 )
 
-func compareLevels(first, second int) (isIncrease, isDecrease bool, distance int) {
-	return first < second, first > second, utils.Abs(first - second)
+func isSafeDelta(levels []int) {
+
 }
 
-// Possible recursive method: pass in previous distance, first, second
-// Initial call: 0, 7, 6 -> safe
-// 2nd call: -1, 6, 4 -> safe
-// 3rd call: -2, 4, 2 -> safe
-
-// Initial call: 0, 1, 2 -> safe
-// 2nd call: 1, 2, 7 -> unsafe (+5)
-
-// Initial call: 0, 1, 3 -> safe
-// 2nd call: 2, 3, 2 -> unsafe (+2 then -1)
+// Much less naive implementation that uses the fact that we know
+// how many levels are in each report to quickly assess the safety
 func isSafeReport(report [5]int) bool {
-	isAllSafeLevels := true
-	isIncreasing := false
-	isDecreasing := false
+	isSafeDelta(report[0:2])
+	isSafeDelta(report[1:3])
+	isSafeDelta(report[2:4])
 
-	for i := 0; i < len(report)-1; i++ {
-		isIncrease, isDecrease, distance := compareLevels(report[i], report[i+1])
+	// isAllSafeLevels := true
+	// isIncreasing := false
+	// isDecreasing := false
 
-		isIncreasing = isIncreasing || isIncrease
-		isDecreasing = isDecreasing || isDecrease
+	// for i := 0; i < len(report)-1; i++ {
+	// 	isIncrease, isDecrease, distance := compareLevels(report[i], report[i+1])
 
-		if isIncreasing == isDecreasing || distance >= 4 {
-			isAllSafeLevels = false
-			break
-		}
-	}
+	// 	isIncreasing = isIncreasing || isIncrease
+	// 	isDecreasing = isDecreasing || isDecrease
+
+	// 	if isIncreasing == isDecreasing || distance >= 4 {
+	// 		isAllSafeLevels = false
+	// 		break
+	// 	}
+	// }
 
 	return isAllSafeLevels
 }
