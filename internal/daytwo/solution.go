@@ -29,24 +29,31 @@ func checkIsSafeDelta(levels []int, maxDelta int) bool {
 	return isTrending && isWithinLimit
 }
 
+// I would love for this method not to mutate all the things
 func isSafeReport(report []int, allowSingleLevelRemoval bool) bool {
 	var isSafeReport bool = true
 	var singleLevelRemoved = false
 
-	for i := 0; i <= len(report)-3; i++ {
-		isSafeDelta := checkIsSafeDelta(report[i:i+3], maxLevelDelta)
+	for i := len(report); i > 2; i-- {
+		isSafeReport = checkIsSafeDelta(report[i-3:i], maxLevelDelta)
 
-		if !isSafeDelta && !singleLevelRemoved {
-			// I would so love not to mutate this
-			modifiedReport := append([]int{}, report[:i+1]...)
-			modifiedReport = append(modifiedReport, report[i+2:]...)
-			report = modifiedReport
-
-			isSafeDelta = checkIsSafeDelta(modifiedReport[i:i+3], maxLevelDelta)
-			singleLevelRemoved = true
+		// If we're not allowing the caller to remove a bad
+		// level, just exit and mark the report as bad
+		if !isSafeReport && (!allowSingleLevelRemoval || singleLevelRemoved) {
+			return false
 		}
 
-		isSafeReport = isSafeReport && isSafeDelta
+		if !isSafeReport && allowSingleLevelRemoval && !singleLevelRemoved {
+			modifiedReport := append([]int{}, report[:i-2]...)
+			modifiedReport = append(modifiedReport, report[i-1:]...)
+
+			// Reassign to report. It is now shorter but because we're
+			// searching backwards, the next index accounts for the
+			// change in size
+			report = modifiedReport
+
+			singleLevelRemoved = true
+		}
 	}
 
 	return isSafeReport
