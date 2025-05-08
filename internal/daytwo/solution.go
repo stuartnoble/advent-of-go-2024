@@ -16,7 +16,7 @@ var fileSystem embed.FS
 
 const maxLevelDelta int = 3
 
-func isSafeDelta(levels []int, maxDelta int) bool {
+func checkIsSafeDelta(levels []int, maxDelta int) bool {
 	firstDistance := levels[1] - levels[0]
 	secondDistance := levels[2] - levels[1]
 
@@ -29,21 +29,46 @@ func isSafeDelta(levels []int, maxDelta int) bool {
 	return isTrending && isWithinLimit
 }
 
-func isSafeReport(report []int) bool {
+func isSafeReport(report []int, allowSingleLevelRemoval bool) bool {
 	var isSafeReport bool = true
+	var singleLevelRemoved = false
 
 	for i := 0; i <= len(report)-3; i++ {
-		isSafeReport = isSafeReport && isSafeDelta(report[i:i+3], maxLevelDelta)
+		isSafeDelta := checkIsSafeDelta(report[i:i+3], maxLevelDelta)
+
+		if !isSafeDelta && !singleLevelRemoved {
+			// I would so love not to mutate this
+			modifiedReport := append([]int{}, report[:i+1]...)
+			modifiedReport = append(modifiedReport, report[i+2:]...)
+			report = modifiedReport
+
+			isSafeDelta = checkIsSafeDelta(modifiedReport[i:i+3], maxLevelDelta)
+			singleLevelRemoved = true
+		}
+
+		isSafeReport = isSafeReport && isSafeDelta
 	}
 
 	return isSafeReport
 }
 
+func getSafeReportCount(p *DayTwoPuzzle, allowSingleLevelRemoval bool) int {
+	numSafeReports := 0
+
+	for i := range p.reports {
+		if isSafeReport(p.reports[i], allowSingleLevelRemoval) {
+			numSafeReports++
+		}
+	}
+
+	return numSafeReports
+}
+
 func (p *DayTwoPuzzle) LoadData() *DayTwoPuzzle {
 	data, err := fileSystem.ReadFile("daytwo_input.txt")
 	if err != nil {
-        panic(err)
-    }
+		panic(err)
+	}
 
 	puzzleInput, err := utils.LoadMatrix(data)
 
@@ -57,14 +82,10 @@ func (p *DayTwoPuzzle) LoadData() *DayTwoPuzzle {
 	return p
 }
 
-func (p *DayTwoPuzzle) Solve() int {
-	numSafeReports := 0
+func (p *DayTwoPuzzle) SolvePartOne() int {
+	return getSafeReportCount(p, false)
+}
 
-	for i := range p.reports {
-		if isSafeReport(p.reports[i]) {
-			numSafeReports++
-		}
-	}
-
-	return numSafeReports
+func (p *DayTwoPuzzle) SolvePartTwo() int {
+	return getSafeReportCount(p, true)
 }
