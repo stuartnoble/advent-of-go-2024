@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestSolvePartOne(t *testing.T) {
+func TestSolve(t *testing.T) {
 	reports := [][]int{
 		{7, 6, 4, 2, 1},
 		{1, 2, 7, 8, 9},
@@ -14,38 +14,22 @@ func TestSolvePartOne(t *testing.T) {
 		{1, 3, 6, 7, 9},
 	}
 
-	expectedSafeReports := 2
+	expectedSafeUnmodifiedReports := 2
+	expectedSafeModifiedReports := 4
 
 	dayTwoPuzzle := DayTwoPuzzle{}
 	dayTwoPuzzle.reports = reports
-	actualSafeReports, _ := dayTwoPuzzle.Solve()
+	actualSafeUnmodifiedReports, actualSafeModifiedReports := dayTwoPuzzle.Solve()
 
-	if actualSafeReports != expectedSafeReports {
+	if actualSafeUnmodifiedReports != expectedSafeUnmodifiedReports {
 		t.Errorf("Result from SolvePartOne() was incorrect; want: %v, got: %v.",
-			expectedSafeReports,
-			actualSafeReports)
-	}
-}
-
-func TestSolvePartTwo(t *testing.T) {
-	reports := [][]int{
-		{7, 6, 4, 2, 1},
-		{1, 2, 7, 8, 9},
-		{9, 7, 6, 2, 1},
-		{1, 3, 2, 4, 5},
-		{8, 6, 4, 4, 1},
-		{1, 3, 6, 7, 9},
+			actualSafeUnmodifiedReports,
+			expectedSafeUnmodifiedReports)
 	}
 
-	expectedSafeReports := 4
-
-	dayTwoPuzzle := DayTwoPuzzle{}
-	dayTwoPuzzle.reports = reports
-	_, actualSafeReports := dayTwoPuzzle.Solve()
-
-	if actualSafeReports != expectedSafeReports {
-		t.Errorf("Result from SolvePartTwo() was incorrect; want: %v, got: %v.",
-			expectedSafeReports,
-			actualSafeReports)
+	if actualSafeModifiedReports != expectedSafeModifiedReports {
+		t.Errorf("Result from SolvePartOne() was incorrect; want: %v, got: %v.",
+			actualSafeModifiedReports,
+			expectedSafeModifiedReports)
 	}
 }
