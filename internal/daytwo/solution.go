@@ -63,7 +63,6 @@ func getSafeReportCount(p *DayTwoPuzzle) (int, int) {
 	safeModifiedReportsCount := 0
 
 	for i := range p.reports {
-		fmt.Println("Checking report", i)
 		isSafeReportResult := isSafeReport(p.reports[i])
 
 		if isSafeReportResult {
