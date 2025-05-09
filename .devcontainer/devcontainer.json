@@ -1,3 +1,14 @@
 {
-    "image": "mcr.microsoft.com/devcontainers/go"
+    "image": "mcr.microsoft.com/devcontainers/go",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "formulahendry.code-runner",
+                "IgorSbitnev.error-gutters",
+                "usernamehw.errorlens",
+                "premparihar.gotestexplorer",
+                "766b.go-outliner"
+            ]
+        }
+    }
 }
