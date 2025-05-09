@@ -18,13 +18,10 @@ func main() {
 
 	dayTwoPuzzle := daytwo.DayTwoPuzzle{}
 
-	dayTwoPartOne := dayTwoPuzzle.
+	partOneAnswer, partTwoAnswer := dayTwoPuzzle.
 		LoadData().
-		SolvePartOne()
-	fmt.Println("Answer 1:", dayTwoPartOne)
+		Solve()
 
-	dayTwoPartTwo := dayTwoPuzzle.
-		LoadData().
-		SolvePartTwo()
-	fmt.Println("Answer 2:", dayTwoPartTwo)
+	fmt.Println("Part 1:", partOneAnswer)
+	fmt.Println("Part 2:", partTwoAnswer)
 }

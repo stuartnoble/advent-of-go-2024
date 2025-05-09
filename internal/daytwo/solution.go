@@ -16,7 +16,7 @@ var fileSystem embed.FS
 
 const maxLevelDelta int = 3
 
-func checkIsSafeDelta(levels []int, maxDelta int) bool {
+func checkIsSafeDelta(levels []int, maxDelta int) (bool, int) {
 	firstDistance := levels[1] - levels[0]
 	secondDistance := levels[2] - levels[1]
 
@@ -26,49 +26,61 @@ func checkIsSafeDelta(levels []int, maxDelta int) bool {
 	isWithinLimit := utils.Abs(firstDistance) <= maxDelta &&
 		utils.Abs(secondDistance) <= maxDelta
 
+	// If firstDistance is greater than secondDistance, put the second number in a variable, otherwise put the third number in a variable
+
 	return isTrending && isWithinLimit
 }
 
-// I would love for this method not to mutate all the things
-func isSafeReport(report []int, allowSingleLevelRemoval bool) bool {
-	var isSafeReport bool = true
-	var singleLevelRemoved = false
+func isSafeReport(report []int) (bool, bool) {
+	// Start by assuming the report is safe
+	var isSafeReport = true
+	///var isSafeWhenUnmodified bool = false
+	//var isSafeWhenModified bool = false
+	var isModified bool = false
 
-	for i := len(report); i > 2; i-- {
-		isSafeReport = checkIsSafeDelta(report[i-3:i], maxLevelDelta)
+	for i := 0; i < len(report)-2; {
+		isSafeReport = checkIsSafeDelta(report[i:i+3], maxLevelDelta)
 
-		// If we're not allowing the caller to remove a bad
-		// level, just exit and mark the report as bad
-		if !isSafeReport && (!allowSingleLevelRemoval || singleLevelRemoved) {
-			return false
-		}
+		i++
 
-		if !isSafeReport && allowSingleLevelRemoval && !singleLevelRemoved {
-			modifiedReport := append([]int{}, report[:i-2]...)
-			modifiedReport = append(modifiedReport, report[i-1:]...)
+		if !isSafeReport && !isModified {
+			// Don't do it this way, it will change the original slice!
+			// modifiedSlice := append(report[:i+1], report[i+2:]...)
 
-			// Reassign to report. It is now shorter but because we're
-			// searching backwards, the next index accounts for the
-			// change in size
+			// Don't forget to include index you want (+1)
+			modifiedReport := append([]int{}, report[:i]...)
+			modifiedReport = append(modifiedReport, report[i+1:]...)
 			report = modifiedReport
 
-			singleLevelRemoved = true
+			isModified = true
+
+			// Recheck the same index
+			i--
+
+			//isSafeWhenModified = isSafeWhenModified && checkIsSafeDelta(modifiedReport[i:i+3], maxLevelDelta)
 		}
 	}
 
-	return isSafeReport
+	return isSafeReport && !isModified, isSafeReport && isModified
 }
 
-func getSafeReportCount(p *DayTwoPuzzle, allowSingleLevelRemoval bool) int {
-	numSafeReports := 0
+func getSafeReportCount(p *DayTwoPuzzle) (int, int) {
+	safeUnmodifiedReportsCount := 0
+	safeModifiedReportsCount := 0
 
 	for i := range p.reports {
-		if isSafeReport(p.reports[i], allowSingleLevelRemoval) {
-			numSafeReports++
+		isSafeWhenUnmodified, isSafeWhenModified := isSafeReport(p.re	ports[i])
+
+		if isSafeWhenUnmodified {
+			safeUnmodifiedReportsCount++
+		}
+
+		if isSafeWhenModified {
+			safeModifiedReportsCount++
 		}
 	}
 
-	return numSafeReports
+	return safeUnmodifiedReportsCount, safeModifiedReportsCount
 }
 
 func (p *DayTwoPuzzle) LoadData() *DayTwoPuzzle {
@@ -89,10 +101,8 @@ func (p *DayTwoPuzzle) LoadData() *DayTwoPuzzle {
 	return p
 }
 
-func (p *DayTwoPuzzle) SolvePartOne() int {
-	return getSafeReportCount(p, false)
-}
+func (p *DayTwoPuzzle) Solve() (int, int) {
+	safeUnmodifiedReportsCount, safeModifiedReportsCount := getSafeReportCount(p)
 
-func (p *DayTwoPuzzle) SolvePartTwo() int {
-	return getSafeReportCount(p, true)
+	return safeUnmodifiedReportsCount, safeUnmodifiedReportsCount + safeModifiedReportsCount
 }

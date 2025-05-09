@@ -18,7 +18,7 @@ func TestSolvePartOne(t *testing.T) {
 
 	dayTwoPuzzle := DayTwoPuzzle{}
 	dayTwoPuzzle.reports = reports
-	actualSafeReports := dayTwoPuzzle.SolvePartOne()
+	actualSafeReports, _ := dayTwoPuzzle.Solve()
 
 	if actualSafeReports != expectedSafeReports {
 		t.Errorf("Result from SolvePartOne() was incorrect; want: %v, got: %v.",
@@ -41,7 +41,7 @@ func TestSolvePartTwo(t *testing.T) {
 
 	dayTwoPuzzle := DayTwoPuzzle{}
 	dayTwoPuzzle.reports = reports
-	actualSafeReports := dayTwoPuzzle.SolvePartTwo()
+	_, actualSafeReports := dayTwoPuzzle.Solve()
 
 	if actualSafeReports != expectedSafeReports {
 		t.Errorf("Result from SolvePartTwo() was incorrect; want: %v, got: %v.",
