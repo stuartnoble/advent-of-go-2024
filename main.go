@@ -1,6 +1,7 @@
 package main
 
 import (
+	"adventofgo/internal/daythree"
 	"fmt"
 
 	"adventofgo/internal/dayone"
@@ -17,11 +18,20 @@ func main() {
 	fmt.Println("-----")
 
 	dayTwoPuzzle := daytwo.DayTwoPuzzle{}
-
-	partOneAnswer, partTwoAnswer := dayTwoPuzzle.
+	twoOneAnswer, twoTwoAnswer := dayTwoPuzzle.
 		LoadData().
 		Solve()
 
-	fmt.Println("Part 1:", partOneAnswer)
-	fmt.Println("Part 2:", partTwoAnswer)
+	fmt.Println("Part 1:", twoOneAnswer)
+	fmt.Println("Part 2:", twoTwoAnswer)
+
+	fmt.Println("DAY 3")
+	fmt.Println("-----")
+
+	dayThreePuzzle := daythree.DayThreePuzzle{}
+	threeOneAnswer := dayThreePuzzle.
+		LoadData().
+		Solve()
+
+	fmt.Println("Part 1:", threeOneAnswer)
 }

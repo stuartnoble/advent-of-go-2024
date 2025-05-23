@@ -58,18 +58,18 @@ func isSafeReportWhenModified(report []int, indexToRemove int) bool {
 	return true
 }
 
-func getSafeReportCount(p *DayTwoPuzzle) (int, int) {
+func getSafeReportCount(reports [][]int) (int, int) {
 	safeUnmodifiedReportsCount := 0
 	safeModifiedReportsCount := 0
 
-	for i := range p.reports {
-		isSafeReportResult := isSafeReport(p.reports[i])
+	for i := range reports {
+		isSafeReportResult := isSafeReport(reports[i])
 
 		if isSafeReportResult {
 			safeUnmodifiedReportsCount++
 		}
 
-		if !isSafeReportResult && isSafeReportWhenModified(p.reports[i], 0) {
+		if !isSafeReportResult && isSafeReportWhenModified(reports[i], 0) {
 			safeModifiedReportsCount++
 		}
 	}
@@ -96,7 +96,7 @@ func (p *DayTwoPuzzle) LoadData() *DayTwoPuzzle {
 }
 
 func (p *DayTwoPuzzle) Solve() (int, int) {
-	safeUnmodifiedReportsCount, safeModifiedReportsCount := getSafeReportCount(p)
+	safeUnmodifiedReportsCount, safeModifiedReportsCount := getSafeReportCount(p.reports)
 
 	return safeUnmodifiedReportsCount, safeUnmodifiedReportsCount + safeModifiedReportsCount
 }
